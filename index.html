@@ -16,14 +16,14 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      color: white;
+      margin: 0; /* Ensure no margin for full-screen background */
     }
 
     #tap-button {
       width: 150px;
       height: 150px;
       border-radius: 50%;
-      background-color: rgba(0, 0, 255, 0.8); /* Slight transparency */
+      background-color: rgba(0, 0, 255, 0.8);
       color: white;
       font-size: 24px;
       display: flex;
@@ -31,11 +31,17 @@
       justify-content: center;
       cursor: pointer;
       border: none;
+      text-align: center;
     }
 
     #score {
       margin-top: 20px;
       font-size: 24px;
+      color: white; /* Ensure the score text is visible */
+    }
+
+    h1 {
+      color: white; /* Ensure the header is visible */
     }
   </style>
 </head>
@@ -63,8 +69,10 @@
       }
     });
 
-    // Initialize Telegram WebApp
-    window.Telegram.WebApp.ready();
+    // Initialize Telegram WebApp if running inside Telegram
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+    }
   </script>
 </body>
 </html>
