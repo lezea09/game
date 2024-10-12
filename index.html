@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"> <!-- Prevent zooming -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Tap Game</title>
   <style>
     body {
@@ -12,62 +12,64 @@
       justify-content: center;
       height: 100vh;
       font-family: Arial, sans-serif;
-      background-image: url('https://i.ibb.co/q14qF50/peakpx-2.jpg'); /* New background image */
+      background-image: url('https://i.ibb.co/q14qF50/peakpx-2.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      margin: 0; /* Ensure no margin for full-screen background */
+      margin: 0;
     }
 
     #tap-button {
       width: 150px;
       height: 150px;
       cursor: pointer;
-      touch-action: manipulation; /* Prevent zooming on double-tap */
+      touch-action: manipulation;
     }
 
     #score {
       margin-top: 20px;
       font-size: 24px;
-      color: white; /* Ensure the score text is visible */
+      color: white;
     }
 
     h1 {
-      color: white; /* Ensure the header is visible */
+      color: white;
     }
   </style>
 </head>
 <body>
-  <h1>Tap to earn!</h1>
-
-  <!-- Tap button using the new Tron image -->
+  <h1>Tap the Tron Character!</h1>
+  
+  <!-- Tap button image -->
   <img id="tap-button" src="https://i.ibb.co/MDQ4GmF/tron-3-512.png" alt="Tap the Tron Character!" />
-
+  
   <div id="score">Score: 0</div>
 
   <script>
     // Initialize the score
     let score = 0;
-
-    // Get the button and score elements from the HTML
-    const tapButton = document.getElementById('tap-button');
     const scoreDisplay = document.getElementById('score');
+    const tapButton = document.getElementById('tap-button');
+    const userId = 'user-123'; // Example unique ID (could be replaced with real user ID logic)
 
-    // Handle button tap event
-    tapButton.addEventListener('click', () => {
-      score++; // Increment the score
-      scoreDisplay.textContent = `Score: ${score}`; // Update the score display
-
-      // Send the score back to the bot via Telegram WebApp API
-      if (window.Telegram.WebApp) {
-        window.Telegram.WebApp.sendData(JSON.stringify({ score: score }));
-      }
-    });
-
-    // Initialize Telegram WebApp if running inside Telegram
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.ready();
+    // Retrieve the score from localStorage when the game starts
+    const savedScore = localStorage.getItem(userId + '_score');
+    if (savedScore) {
+      score = parseInt(savedScore);
+      scoreDisplay.textContent = `Score: ${score}`;
     }
+
+    // Function to save the score to localStorage
+    function saveScore() {
+      localStorage.setItem(userId + '_score', score);
+    }
+
+    // Handle button tap event to increment score
+    tapButton.addEventListener('click', () => {
+      score++;
+      scoreDisplay.textContent = `Score: ${score}`;
+      saveScore(); // Save updated score to localStorage
+    });
   </script>
 </body>
 </html>
