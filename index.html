@@ -45,7 +45,11 @@
       border-radius: 5px;
       color: white;
       cursor: pointer;
-      display: none; /* Initially hidden until available */
+    }
+
+    #boost-button:disabled {
+      background-color: grey;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -58,7 +62,7 @@
   <div id="score">Score: 0</div>
 
   <!-- Boost button for x100 score multiplier -->
-  <button id="boost-button">Activate x100 Boost (2 min)</button>
+  <button id="boost-button" disabled>Activate x100 Boost (2 min)</button>
 
   <!-- Game Logic using localStorage -->
   <script>
@@ -69,6 +73,7 @@
     const tapButton = document.getElementById('tap-button');
     const boostButton = document.getElementById('boost-button');
     const boostDuration = 2 * 60 * 1000; // 2 minutes in milliseconds
+    const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
     let boostTimeout = null; // Holds the reference for the boost timeout
 
     // Function to save score to localStorage
@@ -90,14 +95,14 @@
 
     // Function to enable boost button
     function enableBoostButton() {
-      boostButton.style.display = 'block';
       boostButton.disabled = false;
+      boostButton.textContent = "Activate x100 Boost (2 min)";
     }
 
     // Function to disable boost button
     function disableBoostButton() {
-      boostButton.style.display = 'none';
       boostButton.disabled = true;
+      boostButton.textContent = "Boost in Cooldown";
     }
 
     // Check boost availability and status on page load
@@ -105,7 +110,6 @@
       const lastBoostTime = localStorage.getItem('lastBoostTime');
       const boostStartTime = localStorage.getItem('boostStartTime');
       const currentTime = new Date().getTime();
-      const twelveHours = 12 * 60 * 60 * 1000;
 
       // If boost is active, restore the boost for remaining time
       if (boostStartTime) {
@@ -122,6 +126,7 @@
       if (!lastBoostTime || (currentTime - lastBoostTime) >= twelveHours) {
         enableBoostButton();
       } else {
+        disableBoostButton(); // Keep the button disabled until cooldown is over
         const remainingTime = twelveHours - (currentTime - lastBoostTime);
         setTimeout(enableBoostButton, remainingTime); // Enable boost when 12 hours pass
       }
@@ -138,7 +143,6 @@
       boostTimeout = setTimeout(() => {
         multiplier = 1; // Reset to 1x
         disableBoostButton();
-        boostButton.textContent = "Activate x100 Boost (2 min)";
         localStorage.setItem('lastBoostTime', new Date().getTime()); // Save last boost time
         localStorage.removeItem('boostStartTime'); // Remove boost start time
         checkBoostStatus(); // Reset the availability
@@ -160,7 +164,6 @@
     boostButton.addEventListener('click', () => {
       const lastBoostTime = localStorage.getItem('lastBoostTime');
       const currentTime = new Date().getTime();
-      const twelveHours = 12 * 60 * 60 * 1000;
 
       // Check if 12 hours have passed since last boost before activating it
       if (!lastBoostTime || (currentTime - lastBoostTime) >= twelveHours) {
