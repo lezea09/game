@@ -43,7 +43,7 @@
   </style>
 </head>
 <body>
-  <h1>Tap the Tron Character!</h1>
+  <h1>Tap the Tron !</h1>
 
   <!-- Tap button image -->
   <img id="tap-button" src="https://i.ibb.co/MDQ4GmF/tron-3-512.png" alt="Tap the Tron Character!" />
@@ -99,7 +99,7 @@
     // Function to retrieve the user's score from Firebase when the page loads
     function getScoreFromFirebase(userId) {
       const dbRef = ref(database);
-      get(child(dbRef, 'scores/' + userId)).then((snapshot) => {
+      return get(child(dbRef, 'scores/' + userId)).then((snapshot) => {
         if (snapshot.exists()) {
           score = snapshot.val().score;
           scoreDisplay.textContent = `Score: ${score}`;
@@ -107,6 +107,7 @@
           score = 0; // Initialize score to 0 if it doesn't exist
           scoreDisplay.textContent = `Score: ${score}`;
         }
+        return score;
       }).catch((error) => {
         console.error('Error retrieving score:', error);
       });
@@ -131,19 +132,22 @@
       });
     }
 
-    // Get the user's score from Firebase when the game starts
-    getScoreFromFirebase(userId);
+    // Load the user's score from Firebase when the game starts
+    getScoreFromFirebase(userId).then((retrievedScore) => {
+      score = retrievedScore || 0;  // Set the score to 0 if no score is retrieved
+
+      // Handle button tap event to increment score
+      tapButton.addEventListener('click', () => {
+        score++;
+        scoreDisplay.textContent = `Score: ${score}`;
+        saveScoreToFirebase(userId, score); // Save updated score to Firebase
+        getAllScores(); // Update leaderboard
+      });
+    });
 
     // Get the leaderboard when the game starts
     getAllScores();
 
-    // Handle button tap event to increment score
-    tapButton.addEventListener('click', () => {
-      score++;
-      scoreDisplay.textContent = `Score: ${score}`;
-      saveScoreToFirebase(userId, score); // Save updated score to Firebase
-      getAllScores(); // Update leaderboard
-    });
   </script>
 </body>
 </html>
