@@ -35,15 +35,10 @@
     h1 {
       color: white;
     }
-
-    #leaderboard {
-      color: white;
-      margin-top: 20px;
-    }
   </style>
 </head>
 <body>
-  <h1>Tap the Tron!</h1>
+  <h1>Tap the Tron Character!</h1>
 
   <!-- Tap button image -->
   <img id="tap-button" src="https://i.ibb.co/MDQ4GmF/tron-3-512.png" alt="Tap the Tron Character!" />
@@ -56,7 +51,6 @@
     const userId = 'user-123'; // Example unique ID for local storage
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
-    const leaderboardElement = document.getElementById('leaderboard');
 
     // Function to save score to localStorage
     function saveScoreLocally(userId, score) {
@@ -75,24 +69,14 @@
       }
     }
 
-    // Function to display the high score (local leaderboard)
-    function displayLeaderboard(userId) {
-      const highScore = localStorage.getItem(userId + '_score') || 0;
-      leaderboardElement.textContent = `Your high score: ${highScore}`;
-    }
-
     // Load the user's score from localStorage when the game starts
     getScoreFromLocalStorage(userId);
-
-    // Display leaderboard when the game starts
-    displayLeaderboard(userId);
 
     // Handle button tap event to increment score
     tapButton.addEventListener('click', () => {
       score++;
       scoreDisplay.textContent = `Score: ${score}`;
       saveScoreLocally(userId, score); // Save updated score to localStorage
-      displayLeaderboard(userId); // Update leaderboard
     });
   </script>
 </body>
