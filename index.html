@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Tap Game with Persistent Boost</title>
+  <title>Tap Game with Persistent x100 Boost</title>
   <style>
     body {
       display: flex;
@@ -57,13 +57,13 @@
 
   <div id="score">Score: 0</div>
 
-  <!-- Boost button for 1.5x score multiplier -->
-  <button id="boost-button">Activate 1.5x Boost (2 min)</button>
+  <!-- Boost button for x100 score multiplier -->
+  <button id="boost-button">Activate x100 Boost (2 min)</button>
 
   <!-- Game Logic using localStorage -->
   <script>
     let score = 0;
-    let multiplier = 1; // Multiplier (1x by default, 1.5x during boost)
+    let multiplier = 1; // Multiplier (1x by default, x100 during boost)
     const userId = 'user-123'; // Example unique ID for local storage
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
@@ -129,7 +129,7 @@
 
     // Function to activate boost
     function activateBoost(duration = boostDuration) {
-      multiplier = 1.5; // Activate 1.5x boost
+      multiplier = 100; // Activate x100 boost
       boostButton.disabled = true;
       boostButton.textContent = "Boost Active!";
       localStorage.setItem('boostStartTime', new Date().getTime()); // Store boost start time
@@ -138,7 +138,7 @@
       boostTimeout = setTimeout(() => {
         multiplier = 1; // Reset to 1x
         disableBoostButton();
-        boostButton.textContent = "Activate 1.5x Boost (2 min)";
+        boostButton.textContent = "Activate x100 Boost (2 min)";
         localStorage.setItem('lastBoostTime', new Date().getTime()); // Save last boost time
         localStorage.removeItem('boostStartTime'); // Remove boost start time
         checkBoostStatus(); // Reset the availability
