@@ -61,13 +61,13 @@
 
   <div id="score"> 0 TRX</div>
 
-  <!-- Boost button for x50 score multiplier -->
-  <button id="boost-button" disabled>Activate x50 Boost (1 min)</button>
+  <!-- Boost button for x25 score multiplier -->
+  <button id="boost-button" disabled>Activate x25 Boost (1 min)</button>
 
   <!-- Game Logic using localStorage -->
   <script>
     let score = 0;
-    let multiplier = 1; // Multiplier (1x by default, x50 during boost)
+    let multiplier = 1; // Multiplier (1x by default, x25 during boost)
     const userId = 'user-123'; // Example unique ID for local storage
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
@@ -134,7 +134,7 @@
 
     // Function to activate boost
     function activateBoost(duration = boostDuration) {
-      multiplier = 50; // Activate x50 boost
+      multiplier = 25; // Activate x25 boost
       boostButton.disabled = true;
       boostButton.textContent = "Boost Active!";
       localStorage.setItem('boostStartTime', new Date().getTime()); // Store boost start time
