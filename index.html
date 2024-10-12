@@ -156,7 +156,7 @@
     // Handle button tap event to increment score
     tapButton.addEventListener('click', () => {
       score += Math.round(1 * multiplier); // Apply the multiplier
-      scoreDisplay.textContent = `Score: ${score}`;
+      scoreDisplay.textContent = `${score} TRX`;
       saveScoreLocally(userId, score); // Save updated score to localStorage
     });
 
