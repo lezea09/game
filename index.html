@@ -23,15 +23,12 @@
       width: 150px;
       height: 150px;
       border-radius: 50%;
-      background-color: rgba(0, 0, 255, 0.8);
-      color: white;
-      font-size: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background-color: transparent;
       cursor: pointer;
       border: none;
-      text-align: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
 
     #score {
@@ -46,8 +43,8 @@
   </style>
 </head>
 <body>
-  <h1>Tap the Button!</h1>
-  <div id="tap-button">Tap Me!</div>
+  <h1>Tap to earn!</h1>
+  <button id="tap-button" style="background-image: url('https://i.ibb.co/MDQ4GmF/tron-3-512.png');"></button>
   <div id="score">Score: 0</div>
 
   <script>
