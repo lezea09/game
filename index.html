@@ -107,17 +107,18 @@
       const currentTime = new Date().getTime();
       const twelveHours = 12 * 60 * 60 * 1000;
 
+      // If boost is active, restore the boost for remaining time
       if (boostStartTime) {
         const elapsedTime = currentTime - boostStartTime;
 
         if (elapsedTime < boostDuration) {
-          // If boost is still active, restore the boost
           const remainingBoostTime = boostDuration - elapsedTime;
           activateBoost(remainingBoostTime);
           return;
         }
       }
 
+      // Check if the 12-hour cooldown has passed
       if (!lastBoostTime || (currentTime - lastBoostTime) >= twelveHours) {
         enableBoostButton();
       } else {
@@ -157,7 +158,16 @@
 
     // Handle boost button click
     boostButton.addEventListener('click', () => {
-      activateBoost();
+      const lastBoostTime = localStorage.getItem('lastBoostTime');
+      const currentTime = new Date().getTime();
+      const twelveHours = 12 * 60 * 60 * 1000;
+
+      // Check if 12 hours have passed since last boost before activating it
+      if (!lastBoostTime || (currentTime - lastBoostTime) >= twelveHours) {
+        activateBoost();
+      } else {
+        alert("Boost is still in cooldown. Please wait until the cooldown ends.");
+      }
     });
   </script>
 </body>
