@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Tap Game with Boost and Leaderboard</title>
+  <title>Tap Game with Boost</title>
   <style>
     body {
       display: flex;
@@ -32,7 +32,7 @@
       color: white;
     }
 
-    h1, h2 {
+    h1 {
       color: white;
     }
 
@@ -47,12 +47,6 @@
       cursor: pointer;
       display: none; /* Initially hidden until available */
     }
-
-    #leaderboard {
-      margin-top: 20px;
-      color: white;
-      font-size: 18px;
-    }
   </style>
 </head>
 <body>
@@ -66,10 +60,6 @@
   <!-- Boost button for 1.5x score multiplier -->
   <button id="boost-button">Activate 1.5x Boost (2 min)</button>
 
-  <!-- Leaderboard display -->
-  <h2>Leaderboard</h2>
-  <div id="leaderboard">Loading leaderboard...</div>
-
   <!-- Game Logic using localStorage -->
   <script>
     let score = 0;
@@ -78,16 +68,11 @@
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
     const boostButton = document.getElementById('boost-button');
-    const leaderboardElement = document.getElementById('leaderboard');
     let boostTimeout = null; // Holds the reference for the boost timeout
 
     // Function to save score to localStorage
     function saveScoreLocally(userId, score) {
-      const scores = JSON.parse(localStorage.getItem('leaderboard')) || [];
-      const newEntry = { userId, score, date: new Date().toLocaleString() };
-      scores.push(newEntry);
-      scores.sort((a, b) => b.score - a.score); // Sort scores descending
-      localStorage.setItem('leaderboard', JSON.stringify(scores)); // Save leaderboard
+      localStorage.setItem(userId + '_score', score);
     }
 
     // Function to retrieve score from localStorage
@@ -100,15 +85,6 @@
         score = 0; // Default score if not found
         scoreDisplay.textContent = `Score: ${score}`;
       }
-    }
-
-    // Function to display leaderboard
-    function displayLeaderboard() {
-      const scores = JSON.parse(localStorage.getItem('leaderboard')) || [];
-      let leaderboardHTML = scores.map((entry, index) => {
-        return `${index + 1}. ${entry.userId}: ${entry.score} (on ${entry.date}) <br>`;
-      }).join('');
-      leaderboardElement.innerHTML = leaderboardHTML || "No scores yet!";
     }
 
     // Handle Boost Logic
@@ -153,18 +129,13 @@
 
     // Load the user's score from localStorage when the game starts
     getScoreFromLocalStorage(userId);
-    displayLeaderboard(); // Show leaderboard on page load
     checkBoostAvailability(); // Check if the boost button should be enabled
 
     // Handle button tap event to increment score
     tapButton.addEventListener('click', () => {
       score += Math.round(1 * multiplier); // Apply the multiplier
       scoreDisplay.textContent = `Score: ${score}`;
-      localStorage.setItem(userId + '_score', score); // Save score for the user
-
-      // Save score to leaderboard and display it
-      saveScoreLocally(userId, score);
-      displayLeaderboard();
+      saveScoreLocally(userId, score); // Save updated score to localStorage
     });
 
     // Handle boost button click
