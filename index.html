@@ -86,10 +86,10 @@
       const savedScore = localStorage.getItem(userId + '_score');
       if (savedScore !== null) {
         score = parseInt(savedScore);
-        scoreDisplay.textContent = `Score: ${score}`;
+        scoreDisplay.textContent = `${score} TRX`;
       } else {
         score = 0; // Default score if not found
-        scoreDisplay.textContent = `Score: ${score}`;
+        scoreDisplay.textContent = `${score} TRX`;
       }
     }
 
