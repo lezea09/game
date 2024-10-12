@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Tap Game with localStorage and Subscribe</title>
+  <title>Tap Game with localStorage</title>
   <style>
     body {
       display: flex;
@@ -35,22 +35,6 @@
     h1 {
       color: white;
     }
-
-    #subscribe-button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #00BFFF;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      cursor: pointer;
-    }
-
-    #subscribe-button:disabled {
-      background-color: grey;
-      cursor: not-allowed;
-    }
   </style>
 </head>
 <body>
@@ -61,16 +45,12 @@
 
   <div id="score">Score: 0</div>
 
-  <!-- Subscribe button to add 150 coins -->
-  <button id="subscribe-button">Subscribe and Get 150 Coins</button>
-
   <!-- Game Logic using localStorage -->
   <script>
     let score = 0;
-    const userId = '@tronstellar'; // Replace this with the actual Telegram user ID dynamically
+    const userId = 'user-123'; // Example unique ID for local storage
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
-    const subscribeButton = document.getElementById('subscribe-button');
 
     // Function to save score to localStorage
     function saveScoreLocally(userId, score) {
@@ -89,25 +69,6 @@
       }
     }
 
-    // Function to handle subscription
-    function checkSubscription() {
-      fetch('http://your-ngrok-url.ngrok.io/check-subscription?userId=' + userId)
-        .then(response => response.json())
-        .then(data => {
-          if (data.subscribed) {
-            // If subscribed, give 150 coins
-            score += 150;
-            scoreDisplay.textContent = `Score: ${score}`;
-            saveScoreLocally(userId, score); // Save the updated score to localStorage
-            subscribeButton.disabled = true; // Disable the button after subscribing
-            subscribeButton.textContent = "Subscribed!";
-          } else {
-            alert("Please subscribe to the Telegram channel to get 150 coins.");
-          }
-        })
-        .catch(err => console.error(err));
-    }
-
     // Load the user's score from localStorage when the game starts
     getScoreFromLocalStorage(userId);
 
@@ -117,9 +78,6 @@
       scoreDisplay.textContent = `Score: ${score}`;
       saveScoreLocally(userId, score); // Save updated score to localStorage
     });
-
-    // Handle subscription button click
-    subscribeButton.addEventListener('click', checkSubscription);
   </script>
 </body>
 </html>
