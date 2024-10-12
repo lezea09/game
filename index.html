@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Tap Game with Boost</title>
+  <title>Tap Game with Persistent Boost</title>
   <style>
     body {
       display: flex;
@@ -68,6 +68,7 @@
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
     const boostButton = document.getElementById('boost-button');
+    const boostDuration = 2 * 60 * 1000; // 2 minutes in milliseconds
     let boostTimeout = null; // Holds the reference for the boost timeout
 
     // Function to save score to localStorage
@@ -87,21 +88,35 @@
       }
     }
 
-    // Handle Boost Logic
+    // Function to enable boost button
     function enableBoostButton() {
       boostButton.style.display = 'block';
       boostButton.disabled = false;
     }
 
+    // Function to disable boost button
     function disableBoostButton() {
       boostButton.style.display = 'none';
       boostButton.disabled = true;
     }
 
-    function checkBoostAvailability() {
+    // Check boost availability and status on page load
+    function checkBoostStatus() {
       const lastBoostTime = localStorage.getItem('lastBoostTime');
+      const boostStartTime = localStorage.getItem('boostStartTime');
       const currentTime = new Date().getTime();
       const twelveHours = 12 * 60 * 60 * 1000;
+
+      if (boostStartTime) {
+        const elapsedTime = currentTime - boostStartTime;
+
+        if (elapsedTime < boostDuration) {
+          // If boost is still active, restore the boost
+          const remainingBoostTime = boostDuration - elapsedTime;
+          activateBoost(remainingBoostTime);
+          return;
+        }
+      }
 
       if (!lastBoostTime || (currentTime - lastBoostTime) >= twelveHours) {
         enableBoostButton();
@@ -111,25 +126,27 @@
       }
     }
 
-    function activateBoost() {
+    // Function to activate boost
+    function activateBoost(duration = boostDuration) {
       multiplier = 1.5; // Activate 1.5x boost
       boostButton.disabled = true;
       boostButton.textContent = "Boost Active!";
-      const boostDuration = 2 * 60 * 1000; // 2 minutes
+      localStorage.setItem('boostStartTime', new Date().getTime()); // Store boost start time
 
-      // Set boost back to normal after 2 minutes
+      // Set boost back to normal after the remaining duration
       boostTimeout = setTimeout(() => {
         multiplier = 1; // Reset to 1x
         disableBoostButton();
         boostButton.textContent = "Activate 1.5x Boost (2 min)";
         localStorage.setItem('lastBoostTime', new Date().getTime()); // Save last boost time
-        checkBoostAvailability(); // Reset the availability
-      }, boostDuration);
+        localStorage.removeItem('boostStartTime'); // Remove boost start time
+        checkBoostStatus(); // Reset the availability
+      }, duration);
     }
 
     // Load the user's score from localStorage when the game starts
     getScoreFromLocalStorage(userId);
-    checkBoostAvailability(); // Check if the boost button should be enabled
+    checkBoostStatus(); // Check if the boost button should be enabled or if a boost is still active
 
     // Handle button tap event to increment score
     tapButton.addEventListener('click', () => {
@@ -139,7 +156,9 @@
     });
 
     // Handle boost button click
-    boostButton.addEventListener('click', activateBoost);
+    boostButton.addEventListener('click', () => {
+      activateBoost();
+    });
   </script>
 </body>
 </html>
