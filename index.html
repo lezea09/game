@@ -67,7 +67,7 @@
   <!-- Game Logic using localStorage -->
   <script>
     let score = 0;
-    const userId = 'YOUR_TELEGRAM_USER_ID'; // Replace this with the actual Telegram user ID dynamically.
+    const userId = '@tronstellar'; // Replace this with the actual Telegram user ID dynamically
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
     const subscribeButton = document.getElementById('subscribe-button');
@@ -95,7 +95,8 @@
         .then(response => response.json())
         .then(data => {
           if (data.subscribed) {
-            score += 150; // Add 150 coins to the score
+            // If subscribed, give 150 coins
+            score += 150;
             scoreDisplay.textContent = `Score: ${score}`;
             saveScoreLocally(userId, score); // Save the updated score to localStorage
             subscribeButton.disabled = true; // Disable the button after subscribing
