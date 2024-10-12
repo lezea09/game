@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Tap Game with localStorage</title>
+  <title>Tap Game with Boost and Leaderboard</title>
   <style>
     body {
       display: flex;
@@ -32,8 +32,26 @@
       color: white;
     }
 
-    h1 {
+    h1, h2 {
       color: white;
+    }
+
+    #boost-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #FF6347;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      display: none; /* Initially hidden until available */
+    }
+
+    #leaderboard {
+      margin-top: 20px;
+      color: white;
+      font-size: 18px;
     }
   </style>
 </head>
@@ -45,16 +63,31 @@
 
   <div id="score">Score: 0</div>
 
+  <!-- Boost button for 1.5x score multiplier -->
+  <button id="boost-button">Activate 1.5x Boost (2 min)</button>
+
+  <!-- Leaderboard display -->
+  <h2>Leaderboard</h2>
+  <div id="leaderboard">Loading leaderboard...</div>
+
   <!-- Game Logic using localStorage -->
   <script>
     let score = 0;
+    let multiplier = 1; // Multiplier (1x by default, 1.5x during boost)
     const userId = 'user-123'; // Example unique ID for local storage
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
+    const boostButton = document.getElementById('boost-button');
+    const leaderboardElement = document.getElementById('leaderboard');
+    let boostTimeout = null; // Holds the reference for the boost timeout
 
     // Function to save score to localStorage
     function saveScoreLocally(userId, score) {
-      localStorage.setItem(userId + '_score', score);
+      const scores = JSON.parse(localStorage.getItem('leaderboard')) || [];
+      const newEntry = { userId, score, date: new Date().toLocaleString() };
+      scores.push(newEntry);
+      scores.sort((a, b) => b.score - a.score); // Sort scores descending
+      localStorage.setItem('leaderboard', JSON.stringify(scores)); // Save leaderboard
     }
 
     // Function to retrieve score from localStorage
@@ -69,15 +102,73 @@
       }
     }
 
+    // Function to display leaderboard
+    function displayLeaderboard() {
+      const scores = JSON.parse(localStorage.getItem('leaderboard')) || [];
+      let leaderboardHTML = scores.map((entry, index) => {
+        return `${index + 1}. ${entry.userId}: ${entry.score} (on ${entry.date}) <br>`;
+      }).join('');
+      leaderboardElement.innerHTML = leaderboardHTML || "No scores yet!";
+    }
+
+    // Handle Boost Logic
+    function enableBoostButton() {
+      boostButton.style.display = 'block';
+      boostButton.disabled = false;
+    }
+
+    function disableBoostButton() {
+      boostButton.style.display = 'none';
+      boostButton.disabled = true;
+    }
+
+    function checkBoostAvailability() {
+      const lastBoostTime = localStorage.getItem('lastBoostTime');
+      const currentTime = new Date().getTime();
+      const twelveHours = 12 * 60 * 60 * 1000;
+
+      if (!lastBoostTime || (currentTime - lastBoostTime) >= twelveHours) {
+        enableBoostButton();
+      } else {
+        const remainingTime = twelveHours - (currentTime - lastBoostTime);
+        setTimeout(enableBoostButton, remainingTime); // Enable boost when 12 hours pass
+      }
+    }
+
+    function activateBoost() {
+      multiplier = 1.5; // Activate 1.5x boost
+      boostButton.disabled = true;
+      boostButton.textContent = "Boost Active!";
+      const boostDuration = 2 * 60 * 1000; // 2 minutes
+
+      // Set boost back to normal after 2 minutes
+      boostTimeout = setTimeout(() => {
+        multiplier = 1; // Reset to 1x
+        disableBoostButton();
+        boostButton.textContent = "Activate 1.5x Boost (2 min)";
+        localStorage.setItem('lastBoostTime', new Date().getTime()); // Save last boost time
+        checkBoostAvailability(); // Reset the availability
+      }, boostDuration);
+    }
+
     // Load the user's score from localStorage when the game starts
     getScoreFromLocalStorage(userId);
+    displayLeaderboard(); // Show leaderboard on page load
+    checkBoostAvailability(); // Check if the boost button should be enabled
 
     // Handle button tap event to increment score
     tapButton.addEventListener('click', () => {
-      score++;
+      score += Math.round(1 * multiplier); // Apply the multiplier
       scoreDisplay.textContent = `Score: ${score}`;
-      saveScoreLocally(userId, score); // Save updated score to localStorage
+      localStorage.setItem(userId + '_score', score); // Save score for the user
+
+      // Save score to leaderboard and display it
+      saveScoreLocally(userId, score);
+      displayLeaderboard();
     });
+
+    // Handle boost button click
+    boostButton.addEventListener('click', activateBoost);
   </script>
 </body>
 </html>
