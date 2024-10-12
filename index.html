@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tap Game</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    #tap-button {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: blue;
+      color: white;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    #score {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tap the Button!</h1>
+  <div id="tap-button">Tap Me!</div>
+  <div id="score">Score: 0</div>
+
+  <script>
+    // Initialize the score
+    let score = 0;
+
+    // Get the button and score elements from the HTML
+    const tapButton = document.getElementById('tap-button');
+    const scoreDisplay = document.getElementById('score');
+
+    // Handle button tap event
+    tapButton.addEventListener('click', () => {
+      score++; // Increment the score
+      scoreDisplay.textContent = `Score: ${score}`; // Update the score display
+
+      // Send the score back to the bot via Telegram WebApp API
+      if (window.Telegram.WebApp) {
+        window.Telegram.WebApp.sendData(JSON.stringify({ score: score }));
+      }
+    });
+
+    // Initialize Telegram WebApp
+    window.Telegram.WebApp.ready();
+  </script>
+</body>
+</html>
