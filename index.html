@@ -12,7 +12,7 @@
       justify-content: center;
       height: 100vh;
       font-family: Arial, sans-serif;
-      background-image: url('https://i.ibb.co/q14qF50/peakpx-2.jpg');
+      background-image: url('https://i.ibb.co/L6r6Fgh/IMG-1326.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -61,18 +61,18 @@
 
   <div id="score"> 0 TRX</div>
 
-  <!-- Boost button for x100 score multiplier -->
+  <!-- Boost button for x50 score multiplier -->
   <button id="boost-button" disabled>Activate x50 Boost (1 min)</button>
 
   <!-- Game Logic using localStorage -->
   <script>
     let score = 0;
-    let multiplier = 1; // Multiplier (1x by default, x100 during boost)
+    let multiplier = 1; // Multiplier (1x by default, x50 during boost)
     const userId = 'user-123'; // Example unique ID for local storage
     const scoreDisplay = document.getElementById('score');
     const tapButton = document.getElementById('tap-button');
     const boostButton = document.getElementById('boost-button');
-    const boostDuration = 1 * 60 * 1000; // 2 minutes in milliseconds
+    const boostDuration = 1 * 60 * 1000; // 1 minutE in milliseconds
     const twelveHours = 12 * 60 * 60 * 1000; // 12 hours in milliseconds
     let boostTimeout = null; // Holds the reference for the boost timeout
 
