@@ -43,7 +43,7 @@
   </style>
 </head>
 <body>
-  <h1>Tap the Tron !</h1>
+  <h1>Tap the Tron Character!</h1>
 
   <!-- Tap button image -->
   <img id="tap-button" src="https://i.ibb.co/MDQ4GmF/tron-3-512.png" alt="Tap the Tron Character!" />
@@ -136,7 +136,7 @@
     getScoreFromFirebase(userId).then((retrievedScore) => {
       score = retrievedScore || 0;  // Set the score to 0 if no score is retrieved
 
-      // Handle button tap event to increment score
+      // Attach the button click event after score is loaded
       tapButton.addEventListener('click', () => {
         score++;
         scoreDisplay.textContent = `Score: ${score}`;
@@ -147,7 +147,6 @@
 
     // Get the leaderboard when the game starts
     getAllScores();
-
   </script>
 </body>
 </html>
